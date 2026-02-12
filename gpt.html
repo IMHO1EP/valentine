@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Be My Valentine? 💘</title>
+  <style>
+    :root { --radius: 22px; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(circle at top, #ffe6f2, #fff);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    figure{
+      width:min(520px, 92vw);
+      margin:0;
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: 0 18px 45px rgba(0,0,0,.18);
+      background:#fff;
+    }
+
+    img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    figcaption{
+      padding: 18px 18px 14px;
+      text-align:center;
+    }
+
+    h1{
+      margin: 0 0 12px;
+      font-size: clamp(20px, 3.2vw, 28px);
+      line-height:1.2;
+    }
+
+    .btns{
+      position: relative;         /* so "No" can move inside this area */
+      height: 84px;               /* movement playground */
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 14px;
+    }
+
+    button{
+      border:0;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform .12s ease;
+      user-select:none;
+    }
+
+    #yesBtn{
+      background:#ff3b7b;
+      color:white;
+      box-shadow: 0 10px 22px rgba(255, 59, 123, .35);
+    }
+    #yesBtn:hover{ transform: translateY(-1px) scale(1.02); }
+
+    #noBtn{
+      position:absolute;          /* allows random placement inside .btns */
+      background:#f1f1f4;
+      color:#222;
+      border: 1px solid #e3e3ea;
+    }
+    #noBtn:hover{ transform: scale(1.02); }
+
+    .msg{
+      margin-top: 10px;
+      font-weight: 600;
+      color:#1a1a1a;
+      min-height: 22px;
+    }
+  </style>
+</head>
+
+<body>
+  <figure>
+    <img src="dog.jpg" alt="Cute dog" />
+    <figcaption>
+      <h1>Will you be my Valentine? 💘</h1>
+
+      <div class="btns" id="playground">
+        <button id="yesBtn">Yes 💖</button>
+        <button id="noBtn">No 🙈</button>
+      </div>
+
+      <div class="msg" id="msg"></div>
+    </figcaption>
+  </figure>
+
+  <script>
+    const playground = document.getElementById("playground");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const msg = document.getElementById("msg");
+
+    // Place "No" initially a bit to the right so it doesn't overlap "Yes"
+    function placeNoInitially() {
+      const area = playground.getBoundingClientRect();
+      const btn = noBtn.getBoundingClientRect();
+      const x = Math.min(area.width - btn.width, area.width/2 + 70);
+      const y = Math.max(0, (area.height - btn.height)/2);
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top  = `${y}px`;
+    }
+
+    function moveNoRandom() {
+      const area = playground.getBoundingClientRect();
+      const btn = noBtn.getBoundingClientRect();
+
+      const maxX = Math.max(0, area.width - btn.width);
+      const maxY = Math.max(0, area.height - btn.height);
+
+      const x = Math.floor(Math.random() * maxX);
+      const y = Math.floor(Math.random() * maxY);
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top  = `${y}px`;
+    }
+
+    // Hover (mouse) + touch (mobile) support
+    noBtn.addEventListener("mouseenter", moveNoRandom);
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoRandom();
+    }, { passive: false });
+
+    yesBtn.addEventListener("click", () => {
+      msg.textContent = "YAAAY! 💖💖💖 See you on our Valentine date!";
+      noBtn.style.display = "none";
+      yesBtn.textContent = "Best. Decision. Ever. 😍";
+      yesBtn.disabled = true;
+    });
+
+    window.addEventListener("load", placeNoInitially);
+    window.addEventListener("resize", placeNoInitially);
+  </script>
+</body>
+</html>
